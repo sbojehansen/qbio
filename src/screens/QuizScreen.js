@@ -10,9 +10,15 @@ const OPTIONS_PER_CARD = 4;
 // Builds the list of flashcards for one round.
 // Each card has the correct amino acid ("answer") plus 4 name choices
 // in random order: the right one and 3 wrong ones.
-function buildCards(count) {
-  const picked = shuffle(aminoAcids).slice(0, count);
+//
+// pool:  the amino acids the player selected in the settings
+// count: how many cards to make
+function buildCards(pool, count) {
+  // The structures shown come only from the selected amino acids...
+  const picked = shuffle(pool).slice(0, count);
 
+  // ...but the wrong choices can be any of the 20, so the quiz stays a
+  // real test even when only a few amino acids are selected.
   return picked.map((answer) => {
     const wrongChoices = shuffle(aminoAcids.filter((aa) => aa.name !== answer.name))
       .slice(0, OPTIONS_PER_CARD - 1);
@@ -23,12 +29,12 @@ function buildCards(count) {
   });
 }
 
-export default function QuizScreen({ cardCount, onFinish, onQuit }) {
+export default function QuizScreen({ pool, cardCount, onFinish, onQuit }) {
   // "State" is data that can change while the screen is showing.
   // When state changes, React redraws the screen automatically.
   //
   // useState(() => ...) runs buildCards only once, when the quiz starts.
-  const [cards] = useState(() => buildCards(cardCount));
+  const [cards] = useState(() => buildCards(pool, cardCount));
   const [index, setIndex] = useState(0);         // which card we're on
   const [selected, setSelected] = useState(null); // the name the player tapped (null = not answered yet)
   const [score, setScore] = useState(0);
