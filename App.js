@@ -18,7 +18,7 @@ const ALL_NAMES = aminoAcids.map((aa) => aa.name);
 export default function App() {
   const [screen, setScreen] = useState('home');
   const [cardCount, setCardCount] = useState(10);
-  const [result, setResult] = useState({ score: 0, total: 0 });
+  const [result, setResult] = useState({ score: 0, total: 0, seconds: 0 });
   // Changing this number gives QuizScreen a new "key", which makes
   // React start it fresh (new shuffled cards, score back to 0).
   const [round, setRound] = useState(0);
@@ -51,8 +51,8 @@ export default function App() {
     setScreen('quiz');
   }
 
-  function finishQuiz(score, total) {
-    setResult({ score, total });
+  function finishQuiz(score, total, seconds) {
+    setResult({ score, total, seconds });
     setScreen('results');
   }
 
@@ -90,6 +90,7 @@ export default function App() {
           <ResultsScreen
             score={result.score}
             total={result.total}
+            seconds={result.seconds}
             onPlayAgain={() => startQuiz(cardCount)}
             onHome={() => setScreen('home')}
           />

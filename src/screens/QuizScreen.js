@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { aminoAcids, structureImageUrl } from '../data/aminoAcids';
 import { shuffle } from '../utils/shuffle';
+import { formatTime } from '../utils/formatTime';
 import { colors } from '../theme';
 import BigButton from '../components/BigButton';
 
@@ -39,6 +40,17 @@ export default function QuizScreen({ pool, cardCount, onFinish, onQuit }) {
   const [selected, setSelected] = useState(null); // the name the player tapped (null = not answered yet)
   const [score, setScore] = useState(0);
   const [imageLoading, setImageLoading] = useState(true);
+  const [seconds, setSeconds] = useState(0);      // how long the quiz has been running
+
+  // The timer: once the quiz starts, add 1 to "seconds" every 1000 ms (1 second).
+  useEffect(() => {
+    const timer = setInterval(() => {
+      // Passing a function gets the latest value, so we never miss a second.
+      setSeconds((s) => s + 1);
+    }, 1000);
+    // The function we return runs when the screen closes, and stops the timer.
+    return () => clearInterval(timer);
+  }, []);
 
   const card = cards[index];
   const answered = selected !== null;
@@ -54,7 +66,7 @@ export default function QuizScreen({ pool, cardCount, onFinish, onQuit }) {
 
   function handleNext() {
     if (isLastCard) {
-      onFinish(score, cards.length);
+      onFinish(score, cards.length, seconds);
     } else {
       setIndex(index + 1);
       setSelected(null);
@@ -72,14 +84,17 @@ export default function QuizScreen({ pool, cardCount, onFinish, onQuit }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Top bar: quit button, progress and score */}
+      {/* Top bar: quit button, progress with timer, and score */}
       <View style={styles.header}>
         <Pressable onPress={onQuit} hitSlop={12}>
           <Text style={styles.quit}>✕ Quit</Text>
         </Pressable>
-        <Text style={styles.progress}>
-          Card {index + 1} of {cards.length}
-        </Text>
+        <View style={styles.headerMiddle}>
+          <Text style={styles.progress}>
+            Card {index + 1} of {cards.length}
+          </Text>
+          <Text style={styles.timer}>⏱ {formatTime(seconds)}</Text>
+        </View>
         <Text style={styles.score}>Score: {score}</Text>
       </View>
 
@@ -150,10 +165,20 @@ const styles = StyleSheet.create({
     color: colors.mutedText,
     fontSize: 15,
   },
+  headerMiddle: {
+    alignItems: 'center',
+  },
   progress: {
     color: colors.text,
     fontSize: 15,
     fontWeight: '600',
+  },
+  timer: {
+    color: colors.mutedText,
+    fontSize: 14,
+    marginTop: 2,
+    // Every digit takes the same width, so the timer doesn't wiggle as it counts.
+    fontVariant: ['tabular-nums'],
   },
   score: {
     color: colors.primary,

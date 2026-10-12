@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { colors } from '../theme';
+import { formatTime } from '../utils/formatTime';
 import BigButton from '../components/BigButton';
 
 // Picks an encouraging message based on the percentage of correct answers.
@@ -10,7 +11,7 @@ function messageFor(percent) {
   return "Keep going, you'll get there with practice.";
 }
 
-export default function ResultsScreen({ score, total, onPlayAgain, onHome }) {
+export default function ResultsScreen({ score, total, seconds, onPlayAgain, onHome }) {
   const percent = Math.round((score / total) * 100);
 
   return (
@@ -20,6 +21,7 @@ export default function ResultsScreen({ score, total, onPlayAgain, onHome }) {
         {score} / {total}
       </Text>
       <Text style={styles.percent}>{percent}% correct</Text>
+      <Text style={styles.time}>⏱ Time: {formatTime(seconds)}</Text>
       <Text style={styles.message}>{messageFor(percent)}</Text>
 
       <View style={styles.buttons}>
@@ -53,6 +55,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: colors.mutedText,
     textAlign: 'center',
+  },
+  time: {
+    fontSize: 16,
+    color: colors.mutedText,
+    textAlign: 'center',
+    marginTop: 6,
   },
   message: {
     fontSize: 17,
