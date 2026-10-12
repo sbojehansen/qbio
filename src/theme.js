@@ -4,7 +4,7 @@ export const colors = {
   card: '#FFFFFF',
   text: '#1B2B24',
   mutedText: '#5E6E66',
-  primary: '#2E7D5B', // a "biology green"
+  primary: '#2E7D5B' , // a "biology green"
   correct: '#2E9D5B',
   correctLight: '#DDF3E6',
   wrong: '#D2483F',

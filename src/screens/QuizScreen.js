@@ -103,7 +103,7 @@ export default function QuizScreen({ cardCount, onFinish, onQuit }) {
         )}
       </View>
 
-      {/* The answer choices. .map() turns each option into a button. */}
+      {/* The answer choices, shown as a 2x2 grid. .map() turns each option into a button. */}
       <View style={styles.options}>
         {card.options.map((option) => (
           <Pressable
@@ -115,7 +115,7 @@ export default function QuizScreen({ cardCount, onFinish, onQuit }) {
               optionStyle(option.name),
             ]}
           >
-            <Text style={styles.optionText}>{option.name}</Text>
+            <Text style={styles.optionText} numberOfLines={2}>{option.name}</Text>
           </Pressable>
         ))}
       </View>
@@ -173,9 +173,8 @@ const styles = StyleSheet.create({
   },
   imageBox: {
     width: '100%',
-    aspectRatio: 1,
-    maxHeight: 300,
-    marginTop: 12,
+    height: 240,
+    marginTop: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -201,16 +200,25 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   options: {
-    marginTop: 20,
+    marginTop: 16,
+    // "row" + "wrap" places the buttons side by side and starts a new
+    // row when there's no room left, which gives us a 2x2 grid.
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 10,
   },
   option: {
+    // Each button takes up just under half the width, so two fit per row.
+    flexBasis: '45%',
+    flexGrow: 1,
+    minHeight: 60,
+    justifyContent: 'center',
     backgroundColor: colors.card,
     borderWidth: 2,
     borderColor: colors.border,
     borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
   },
   optionPressed: {
     borderColor: colors.primary,
@@ -227,12 +235,12 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   optionText: {
-    fontSize: 17,
+    fontSize: 16,
     color: colors.text,
     textAlign: 'center',
     fontWeight: '600',
   },
   next: {
-    marginTop: 20,
+    marginTop: 16,
   },
 });
